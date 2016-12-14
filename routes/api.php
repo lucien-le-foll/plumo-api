@@ -13,4 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::resource('house', 'HouseController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+
+Route::post('/user', 'UserController@create');
+Route::post('/login', 'UserController@login');
+
+Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::resource('house', 'HouseController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+});

@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 class HouseController extends Controller
 {
-    //
-
     /**
      * @param Request $request
      * @return mixed
@@ -26,7 +24,11 @@ class HouseController extends Controller
      */
     public function store(Request $request)
     {
-        $house = House::create(['name' => $request->get('name'), 'description' => $request->get('description')]);
+        try {
+            $house = House::create(['name' => $request->get('name'), 'description' => $request->get('description')]);
+        } catch (\Exception $e){
+            return response()->json(['error' => 'House already exists']);
+        }
 
         return response()->json($house);
     }
