@@ -44,6 +44,11 @@ class HouseController extends Controller
         return response()->json($house);
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
     public function update(Request $request, $id)
     {
         $house = House::find($id);
@@ -54,6 +59,11 @@ class HouseController extends Controller
         return response()->json($house);
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
     public function destroy(Request $request, $id)
     {
         House::destroy($id);
