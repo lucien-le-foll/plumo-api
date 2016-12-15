@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-
 Route::post('/user', 'UserController@create');
 Route::post('/login', 'UserController@login');
 
