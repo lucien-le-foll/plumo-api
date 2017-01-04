@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\House;
+use App\User;
 use Illuminate\Http\Request;
+use JWTAuth;
 
 class HouseController extends Controller
 {
@@ -24,11 +26,13 @@ class HouseController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $house = House::create(['name' => $request->get('name'), 'description' => $request->get('description')]);
-        } catch (\Exception $e){
-            return response()->json(['error' => 'House already exists']);
-        }
+        $user = JWTAuth::parseToken()->authenticate();
+        $house = House::create([
+            'name' => $request->get('name'),
+            'description' => $request->get('description')
+        ]);
+        $user->house()->associate($house);
+        $user->save();
 
         return response()->json($house);
     }
@@ -70,5 +74,14 @@ class HouseController extends Controller
         $houses = House::all();
 
         return response()->json($houses);
+    }
+
+    public function currentHouse(Request $request)
+    {
+        if($user = JWTAuth::parseToken()->authenticate()){
+            return response()->json($user->house);
+        }
+
+        return response()->json(['error' => 'not_allowed'], 403);
     }
 }

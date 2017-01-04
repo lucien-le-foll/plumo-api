@@ -15,4 +15,20 @@ class House extends Model
      * @var array
      */
     protected $fillable = ['name', 'description'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function rooms()
+    {
+        return $this->hasMany(Room::class);
+    }
 }
