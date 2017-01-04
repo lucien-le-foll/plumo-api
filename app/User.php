@@ -27,6 +27,10 @@ class User extends Authenticatable
         'password', 'remember_token'
     ];
 
+    protected $visible = [
+        'house', 'name', 'email'
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

@@ -79,7 +79,7 @@ class HouseController extends Controller
     public function currentHouse(Request $request)
     {
         if($user = JWTAuth::parseToken()->authenticate()){
-            return response()->json($user->house);
+            return response()->json($user->house->load('users'));
         }
 
         return response()->json(['error' => 'not_allowed'], 403);

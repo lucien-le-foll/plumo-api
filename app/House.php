@@ -16,6 +16,10 @@ class House extends Model
      */
     protected $fillable = ['name', 'description'];
 
+    protected $visible = [
+        'users', 'rooms', 'name', 'description'
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
