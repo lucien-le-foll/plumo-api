@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\House;
-use App\User;
 use Illuminate\Http\Request;
 use JWTAuth;
 
@@ -79,9 +78,13 @@ class HouseController extends Controller
     public function currentHouse(Request $request)
     {
         if($user = JWTAuth::parseToken()->authenticate()){
-            return response()->json($user->house->load('users'));
+            if($user->house){
+                return response()->json($user->house->load('users'));
+            }
+            $house = new House();
+            return response()->json($house);
         }
 
-        return response()->json(['error' => 'not_allowed'], 403);
+        return response()->json(['error' => 'not_allowed'], 401);
     }
 }
