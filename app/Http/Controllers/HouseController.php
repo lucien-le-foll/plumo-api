@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\House;
+use App\Room;
 use Illuminate\Http\Request;
 use JWTAuth;
 
@@ -25,15 +26,28 @@ class HouseController extends Controller
      */
     public function store(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
+        // creating and saving the house object
         $house = House::create([
             'name' => $request->get('name'),
             'description' => $request->get('description')
         ]);
+
+        // defining the first user of the house
+        $user = JWTAuth::parseToken()->authenticate();
         $user->house()->associate($house);
         $user->save();
 
-        return response()->json($house);
+        // parsing the rooms so they can be added to the house
+        foreach ($request->get('rooms') as $room) {
+            $newRoom = Room::create([
+                'name' => $room['name'],
+                'description' => $room['description']
+            ]);
+            $newRoom->house()->associate($house);
+            $newRoom->save();
+        }
+
+        return response()->json($house->load('users', 'rooms'));
     }
 
     /**
