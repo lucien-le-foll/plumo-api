@@ -47,7 +47,10 @@ class HouseController extends Controller
             $newRoom->save();
         }
 
-        return response()->json($house->load('users', 'rooms'));
+        $house->load('users');
+        $house->load('rooms');
+
+        return response()->json($house);
     }
 
     /**
@@ -57,6 +60,9 @@ class HouseController extends Controller
     public function show(Request $request, $id)
     {
         $house = House::find($id);
+
+        $house->load('users');
+        $house->load('rooms');
 
         return response()->json($house);
     }
