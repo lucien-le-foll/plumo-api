@@ -93,7 +93,7 @@ class HouseController extends Controller
     {
         if($user = JWTAuth::parseToken()->authenticate()){
             if($user->house){
-                return response()->json($user->house->load('users'));
+                return response()->json($user->house->load('users', 'rooms'));
             }
             $house = new House();
             return response()->json($house);
