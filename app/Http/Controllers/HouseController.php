@@ -38,13 +38,15 @@ class HouseController extends Controller
         $user->save();
 
         // parsing the rooms so they can be added to the house
-        foreach ($request->get('rooms') as $room) {
-            $newRoom = Room::create([
-                'name' => $room['name'],
-                'description' => $room['description']
-            ]);
-            $newRoom->house()->associate($house);
-            $newRoom->save();
+        if($request->get('rooms')){
+            foreach ($request->get('rooms') as $room) {
+                $newRoom = Room::create([
+                    'name' => $room['name'],
+                    'description' => $room['description']
+                ]);
+                $newRoom->house()->associate($house);
+                $newRoom->save();
+            }
         }
 
         return response()->json($house->load(['users', 'rooms']));
@@ -71,6 +73,13 @@ class HouseController extends Controller
         $house = House::find($id);
         $house->name = $request->get('name');
         $house->description = $request->get('description');
+
+        if($request->get('rooms')){
+            foreach ($request->get('rooms') as $room){
+                $room = Room::create($room);
+                $room->house()->associate($house);
+            }
+        }
         $house->save();
 
         return response()->json($house);
@@ -89,14 +98,20 @@ class HouseController extends Controller
         return response()->json($houses);
     }
 
+    /**
+     * returns the users current house
+     * @param Request $request
+     *
+     * @return mixed
+     */
     public function currentHouse(Request $request)
     {
         if($user = JWTAuth::parseToken()->authenticate()){
             if($user->house){
                 return response()->json($user->house->load('users', 'rooms'));
             }
-            $house = new House();
-            return response()->json($house);
+
+            return response()->json(['error' => 'no house yet'], 206);
         }
 
         return response()->json(['error' => 'not_allowed'], 401);
