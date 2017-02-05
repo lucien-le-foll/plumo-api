@@ -17,7 +17,7 @@ class House extends Model
     protected $fillable = ['name', 'description'];
 
     protected $visible = [
-        'users', 'rooms', 'name', 'description'
+        'id', 'users', 'rooms', 'name', 'description'
     ];
 
     /**

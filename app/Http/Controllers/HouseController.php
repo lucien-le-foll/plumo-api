@@ -15,9 +15,12 @@ class HouseController extends Controller
      */
     public function index(Request $request)
     {
-        $houses = House::all();
+        $user = JWTAuth::parseToken()->authenticate();
+        if($house = $user->house){
+            return response()->json($house->load(['users', 'rooms']), 200);
+        }
 
-        return response()->json($houses);
+        return response()->json(['error' => 'not found'], 404);
     }
 
     /**
@@ -37,30 +40,7 @@ class HouseController extends Controller
         $user->house()->associate($house);
         $user->save();
 
-        // parsing the rooms so they can be added to the house
-        if($request->get('rooms')){
-            foreach ($request->get('rooms') as $room) {
-                $newRoom = Room::create([
-                    'name' => $room['name'],
-                    'description' => $room['description']
-                ]);
-                $newRoom->house()->associate($house);
-                $newRoom->save();
-            }
-        }
-
-        return response()->json($house->load(['users', 'rooms']));
-    }
-
-    /**
-     * @param Request $request
-     * @return mixed
-     */
-    public function show(Request $request, $id)
-    {
-        $house = House::find($id);
-
-        return response()->json($house->load(['users', 'rooms']));
+        return response()->json($house->load(['users', 'rooms']), 200);
     }
 
     /**
@@ -70,19 +50,15 @@ class HouseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $house = House::find($id);
+        $user = JWTAuth::parseToken()->authenticate();
+        $house = $user->house;
+
         $house->name = $request->get('name');
         $house->description = $request->get('description');
 
-        if($request->get('rooms')){
-            foreach ($request->get('rooms') as $room){
-                $room = Room::create($room);
-                $room->house()->associate($house);
-            }
-        }
         $house->save();
 
-        return response()->json($house);
+        return response()->json($house, 200);
     }
 
     /**
@@ -92,28 +68,10 @@ class HouseController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        House::destroy($id);
-        $houses = House::all();
+        $user = JWTAuth::parseToken()->authenticate();
+        $house = $user->house;
+        $house->delete();
 
-        return response()->json($houses);
-    }
-
-    /**
-     * returns the users current house
-     * @param Request $request
-     *
-     * @return mixed
-     */
-    public function currentHouse(Request $request)
-    {
-        if($user = JWTAuth::parseToken()->authenticate()){
-            if($user->house){
-                return response()->json($user->house->load('users', 'rooms'));
-            }
-
-            return response()->json(['error' => 'no house yet'], 206);
-        }
-
-        return response()->json(['error' => 'not_allowed'], 401);
+        return response()->json(['success' => 'no-content'], 201);
     }
 }

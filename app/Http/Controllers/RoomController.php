@@ -12,16 +12,17 @@ class RoomController extends Controller
 
     public function index()
     {
-        $rooms = Room::all();
+        $user = JWTAuth::parseToken()->authenticate();
+        $rooms = $user->house->rooms;
 
-        return response()->json($rooms);
+        return response()->json($rooms, 200);
     }
 
     public function show(Request $request, $id)
     {
         $room = Room::find($id);
 
-        return response()->json($room);
+        return response()->json($room, 200);
     }
 
     public function store(Request $request)
@@ -37,16 +38,34 @@ class RoomController extends Controller
         $room->house()->associate($house);
         $room->save();
 
-        return response()->json($room);
+        return response()->json($room, 200);
     }
 
     public function update(Request $request, $id)
     {
-        
+        if (!$room = Room::find($id)) {
+            return response()->json(['error' => 'not found'], 404);
+        }
+
+        $room->name = $request->get('name');
+        $room->description = $request->get('description');
+
+        $room->save();
+
+        return response()->json($room, 200);
     }
 
     public function destroy(Request $request, $id)
     {
+        $user = JWTAuth::parseToken()->authenticate();
+        $house = $user->house;
+        $room = Room::find($id);
 
+        if (is_int($house->rooms->search($room))) {
+            $room->delete();
+            return response()->json(['success' => 'no-content'], 201);
+        }
+
+        return response()->json(['error' => 'not-authorized'], 403);
     }
 }

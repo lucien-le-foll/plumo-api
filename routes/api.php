@@ -19,11 +19,10 @@ Route::post('/login', 'UserController@login');
 Route::group(['middleware' => 'jwt.auth'], function () {
 
     // House related routes
-    Route::resource('house', 'HouseController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-    Route::get('/user/house', 'HouseController@currentHouse');
-
-    // Task related routes
-    Route::resource('room', 'RoomController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+    Route::resource('house', 'HouseController', ['only' => ['index', 'store', 'update', 'destroy']]);
 
     // Room related routes
+    Route::resource('room', 'RoomController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+
+    // Task related routes
 });

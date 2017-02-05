@@ -10,7 +10,7 @@ class Room extends Model
 
     protected $fillable = ['name', 'description'];
 
-    protected $visible = ['name', 'description', 'house'];
+    protected $visible = ['id', 'name', 'description', 'house'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
