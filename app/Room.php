@@ -10,7 +10,7 @@ class Room extends Model
 
     protected $fillable = ['name', 'description'];
 
-    protected $visible = ['id', 'name', 'description', 'house'];
+    protected $visible = ['id', 'name', 'description', 'house', 'tasks'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -18,5 +18,10 @@ class Room extends Model
     public function house()
     {
         return $this->belongsTo(House::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

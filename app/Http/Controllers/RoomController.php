@@ -22,7 +22,7 @@ class RoomController extends Controller
     {
         $room = Room::find($id);
 
-        return response()->json($room, 200);
+        return response()->json($room->load(['tasks']), 200);
     }
 
     public function store(Request $request)

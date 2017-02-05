@@ -28,7 +28,7 @@ class User extends Authenticatable
     ];
 
     protected $visible = [
-        'house', 'name', 'email'
+        'house', 'name', 'email', 'tasks'
     ];
 
     /**
@@ -37,5 +37,10 @@ class User extends Authenticatable
     public function house()
     {
         return $this->belongsTo(House::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

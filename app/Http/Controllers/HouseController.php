@@ -40,7 +40,7 @@ class HouseController extends Controller
         $user->house()->associate($house);
         $user->save();
 
-        return response()->json($house->load(['users', 'rooms']), 200);
+        return response()->json($house->load(['users', 'rooms', 'tasks']), 200);
     }
 
     /**

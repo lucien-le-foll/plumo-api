@@ -34,7 +34,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => $request->password
         ];
-        
+
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(['error' => 'invalid_credentials'], 401);
@@ -44,5 +44,12 @@ class UserController extends Controller
         }
 
         return response()->json(compact('token'));
+    }
+
+    public function me()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        return response()->json($user->load(['tasks', 'house']), 200);
     }
 }
