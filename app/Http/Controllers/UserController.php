@@ -46,6 +46,13 @@ class UserController extends Controller
         return response()->json(compact('token'));
     }
 
+    public function search($query)
+    {
+        $users = User::where('email', 'LIKE', '%'.$query.'%')->where('house_id', '=', null)->get();
+
+        return response()->json($users->toArray(), 200);
+    }
+
     public function me()
     {
         $user = JWTAuth::parseToken()->authenticate();

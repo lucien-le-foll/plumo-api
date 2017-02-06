@@ -18,10 +18,13 @@ Route::post('/login', 'UserController@login');
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 
-    Route::get('/me', 'UserController@me');
+    Route::get('/user/me', 'UserController@me');
+    Route::get('/user/{query}', 'UserController@search');
 
     // House related routes
     Route::resource('house', 'HouseController', ['only' => ['index', 'store', 'update', 'destroy']]);
+    Route::get('/house/leave', 'HouseController@leave');
+    Route::get('/house/join/{id}', 'HouseController@join');
 
     // Room related routes
     Route::resource('room', 'RoomController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\House;
 use App\Room;
+use App\User;
 use Illuminate\Http\Request;
 use JWTAuth;
 
@@ -16,8 +17,8 @@ class HouseController extends Controller
     public function index(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if($house = $user->house){
-            return response()->json($house->load(['users', 'rooms']), 200);
+        if ($house = $user->house) {
+            return response()->json($house->load(['users', 'rooms', 'rooms.tasks', 'users.tasks']), 200);
         }
 
         return response()->json(['error' => 'not found'], 404);
@@ -73,5 +74,38 @@ class HouseController extends Controller
         $house->delete();
 
         return response()->json(['success' => 'no-content'], 201);
+    }
+
+    /**
+     * Allows for a user to leave the house
+     * @param Request $request
+     * @return mixed
+     */
+    public function leave(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $house = $user->house;
+        $user->house()->dissociate();
+
+        if (count($house->users->toArray()) == 0) {
+            $house->delete();
+        }
+        $user->save();
+
+        return response()->json(['success' => 'no-content'], 203);
+    }
+
+    public function join(Request $request, $id)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $house = $user->house;
+        $targerUser = User::find($id);
+        if ($targerUser->house == null) {
+            $targerUser->house()->associate($house);
+            $targerUser->save();
+
+            return response()->json(['success' => 'no-content'], 203);
+        }
+        return response()->json(['error' => 'unauthorized'], 403);
     }
 }

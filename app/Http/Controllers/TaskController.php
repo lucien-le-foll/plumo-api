@@ -89,7 +89,7 @@ class TaskController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $task = Task::find($id);
 
-        if(is_int($user->house->tasks->search($task))){
+        if(is_int($user->tasks->search($task))){
             $task->delete();
 
             return response()->json(['success' => 'no-content'], 203);

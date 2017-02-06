@@ -15,7 +15,7 @@ class RoomController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $rooms = $user->house->rooms;
 
-        return response()->json($rooms, 200);
+        return response()->json($rooms->load(['tasks']), 200);
     }
 
     public function show(Request $request, $id)
