@@ -28,7 +28,7 @@ class User extends Authenticatable
     ];
 
     protected $visible = [
-        'house', 'name', 'email', 'tasks'
+        'id', 'house', 'name', 'email', 'tasks'
     ];
 
     /**
