@@ -99,7 +99,7 @@ class HouseController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
         $house = $user->house;
-        $targerUser = User::find($id);
+        $targerUser = User::find($id)->load('house');
         if (count($targerUser->house)) {
             $targerUser->house()->associate($house);
             $targerUser->save();
