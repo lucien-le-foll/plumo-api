@@ -19,7 +19,7 @@ Route::post('/login', 'UserController@login');
 Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/user/me', 'UserController@me');
-    Route::get('/user/{query}', 'UserController@search');
+    Route::get('/user/{query}', 'UserController@search')->where('query', '[A-Za-z]+');;
 
     // House related routes
     Route::resource('house', 'HouseController', ['only' => ['index', 'store', 'update', 'destroy']]);
