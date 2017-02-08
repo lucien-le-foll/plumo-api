@@ -18,6 +18,7 @@ Route::post('/login', 'UserController@login');
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 
+    // User related routes
     Route::get('/user/me', 'UserController@me');
     Route::get('/user/{query}', 'UserController@search')->where('query', '\w+');
 
@@ -31,4 +32,5 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     // Task related routes
     Route::resource('task', 'TaskController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+    Route::get('/task/perform/{id}', 'TaskController@perform');
 });

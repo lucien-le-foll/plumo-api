@@ -34,7 +34,10 @@ class TaskController extends Controller
 
         $task = new Task([
             'name' => $request->get('name'),
-            'description' => $request->get('description')
+            'description' => $request->get('description'),
+            'date' => $request->get('date'),
+            'done' => false,
+            'recurrence' => 'n'
         ]);
 
         if (is_int($user->house->rooms->search($room)) && is_int($user->house->users->search($targetUser))) {
@@ -42,7 +45,7 @@ class TaskController extends Controller
             $task->room()->associate($room);
             $task->save();
 
-            return response()->json($task, 200);
+            return response()->json($task->load(['user', 'room']), 200);
         }
 
         return response()->json(['error' => 'unauthorized'], 403);
@@ -53,7 +56,7 @@ class TaskController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $task = Task::find($id);
 
-        if (is_int($user->house->tasks->search($task))) {
+        if (is_int($user->tasks->search($task))) {
             return response()->json($task, 200);
         }
 
@@ -89,10 +92,24 @@ class TaskController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $task = Task::find($id);
 
-        if(is_int($user->tasks->search($task))){
+        if (is_int($user->tasks->search($task))) {
             $task->delete();
 
             return response()->json(['success' => 'no-content'], 203);
+        }
+
+        return response()->json(['error' => 'unauthorized'], 403);
+    }
+
+    public function perform(Request $request, $id)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $task = Task::find($id);
+
+        if (is_int($user->tasks->search($task))) {
+            $task->done = true;
+            $task->save();
+            return response()->json($task, 200);
         }
 
         return response()->json(['error' => 'unauthorized'], 403);

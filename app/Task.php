@@ -9,9 +9,9 @@ class Task extends Model
     //
     protected $table = 'tasks';
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'date', 'done', 'recurrence'];
 
-    protected $visible = ['id', 'name', 'description', 'user', 'room'];
+    protected $visible = ['id', 'name', 'description', 'user', 'room', 'date', 'done', 'recurrence'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
