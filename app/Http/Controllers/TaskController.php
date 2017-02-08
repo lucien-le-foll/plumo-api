@@ -21,7 +21,7 @@ class TaskController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        return response()->json($user->tasks, 200);
+        return response()->json($user->tasks->load($this->relations), 200);
     }
 
     /**
