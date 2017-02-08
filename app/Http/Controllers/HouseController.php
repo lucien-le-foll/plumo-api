@@ -10,6 +10,8 @@ use JWTAuth;
 
 class HouseController extends Controller
 {
+    private $relations = ['users', 'rooms', 'rooms.tasks', 'users.tasks'];
+
     /**
      * @param Request $request
      * @return mixed
@@ -18,7 +20,7 @@ class HouseController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
         if ($house = $user->house) {
-            return response()->json($house->load(['users', 'rooms', 'rooms.tasks', 'users.tasks']), 200);
+            return response()->json($house->load($this->relations), 200);
         }
 
         return response()->json(['error' => 'not found'], 404);
@@ -41,7 +43,7 @@ class HouseController extends Controller
         $user->house()->associate($house);
         $user->save();
 
-        return response()->json($house->load(['users', 'rooms']), 200);
+        return response()->json($house->load($this->relations), 200);
     }
 
     /**
@@ -59,7 +61,7 @@ class HouseController extends Controller
 
         $house->save();
 
-        return response()->json($house, 200);
+        return response()->json($house->load($this->relations), 200);
     }
 
     /**

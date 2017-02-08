@@ -10,19 +10,21 @@ class RoomController extends Controller
 {
     //
 
+    private $relations = ['tasks', 'house'];
+
     public function index()
     {
         $user = JWTAuth::parseToken()->authenticate();
         $rooms = $user->house->rooms;
 
-        return response()->json($rooms->load(['tasks']), 200);
+        return response()->json($rooms->load($this->relations), 200);
     }
 
     public function show(Request $request, $id)
     {
         $room = Room::find($id);
 
-        return response()->json($room->load(['tasks']), 200);
+        return response()->json($room->load($this->relations), 200);
     }
 
     public function store(Request $request)
@@ -52,7 +54,7 @@ class RoomController extends Controller
 
         $room->save();
 
-        return response()->json($room, 200);
+        return response()->json($room->load($this->relations), 200);
     }
 
     public function destroy(Request $request, $id)

@@ -11,6 +11,8 @@ class UserController extends Controller
 {
     //
 
+    private $relations = ['tasks', 'house'];
+
     public function create(Request $request)
     {
         try {
@@ -57,6 +59,6 @@ class UserController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        return response()->json($user->load(['tasks', 'house']), 200);
+        return response()->json($user->load($this->relations), 200);
     }
 }

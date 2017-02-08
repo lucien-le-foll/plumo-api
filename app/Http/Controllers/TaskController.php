@@ -12,6 +12,8 @@ class TaskController extends Controller
 {
     //
 
+    private $relations = ['user', 'room'];
+
     /**
      * @return mixed
      */
@@ -45,7 +47,7 @@ class TaskController extends Controller
             $task->room()->associate($room);
             $task->save();
 
-            return response()->json($task->load(['user', 'room']), 200);
+            return response()->json($task->load($this->relations), 200);
         }
 
         return response()->json(['error' => 'unauthorized'], 403);
@@ -57,7 +59,7 @@ class TaskController extends Controller
         $task = Task::find($id);
 
         if (is_int($user->tasks->search($task))) {
-            return response()->json($task, 200);
+            return response()->json($task->load($this->relations), 200);
         }
 
         return response()->json(['error' => 'unauthorized'], 403);
@@ -79,7 +81,7 @@ class TaskController extends Controller
                 $task->room()->associate($room);
                 $task->save();
 
-                return response()->json($task, 200);
+                return response()->json($task->load($this->relations), 200);
             }
             return response()->json(['error' => 'unauthorized'], 403);
         }
@@ -109,7 +111,7 @@ class TaskController extends Controller
         if (is_int($user->tasks->search($task))) {
             $task->done = true;
             $task->save();
-            return response()->json($task, 200);
+            return response()->json($task->load($this->relations), 200);
         }
 
         return response()->json(['error' => 'unauthorized'], 403);
