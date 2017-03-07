@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Log;
@@ -33,17 +34,23 @@ class Kernel extends ConsoleKernel
             $client = new Client([
                 'base_uri' => 'https://api.ionic.io'
             ]);
-            $response = $client->request('POST', '/push/notifications', [
-                'json' => [
-                    "tokens" => ["cmn6h4F3SEg:APA91bGkrz6ij8JeUcumThu_DaZrA5coJukx77gT1OUzpFjPmicKqJUC9gxXvJK5tztj68c9r6CBr3oUuhw5Ni0SerhpnMisiPixzwJHG60XTz5rnUklTrCy95VBu0bkzEWNG81w6rJJ"],
-                    "profile" => "development",
-                    "notification" => [
-                        "message" => "Notification envoyée automatiquement"
+
+            try {
+                $client->request('POST', '/push/notifications', [
+                    'json' => [
+                        "tokens" => ["cmn6h4F3SEg:APA91bGkrz6ij8JeUcumThu_DaZrA5coJukx77gT1OUzpFjPmicKqJUC9gxXvJK5tztj68c9r6CBr3oUuhw5Ni0SerhpnMisiPixzwJHG60XTz5rnUklTrCy95VBu0bkzEWNG81w6rJJ"],
+                        "profile" => "development",
+                        "notification" => [
+                            "message" => "Notification envoyée automatiquement"
+                        ]
                     ]
-                ]
-            ]);
-            Log::info($response->getBody());
-        })->everyMinute()->sendOutputTo('storage/output.log');
+                ]);
+            } catch (ClientException $e) {
+                $response = $e->getResponse();
+                $responseBodyAsString = $response->getBody()->getContents();
+                Log::info($responseBodyAsString);
+            }
+        })->everyMinute();
     }
 
     /**
