@@ -30,15 +30,18 @@ class Kernel extends ConsoleKernel
         //          ->hourlyAt();
 
         $schedule->call(function(){
-            $client = new Client();
-            $response = $client->post('https://api.ionic.io/push/notifications', [
-                "tokens" => ["cmn6h4F3SEg:APA91bGkrz6ij8JeUcumThu_DaZrA5coJukx77gT1OUzpFjPmicKqJUC9gxXvJK5tztj68c9r6CBr3oUuhw5Ni0SerhpnMisiPixzwJHG60XTz5rnUklTrCy95VBu0bkzEWNG81w6rJJ"],
-                "profile" => "development",
-                "notification" => [
-                    "message" => "Notification envoyée automatiquement"
+            $client = new Client([
+                'base_uri' => 'https://api.ionic.io'
+            ]);
+            $response = $client->request('POST', '/push/notifications', [
+                'json' => [
+                    "tokens" => ["cmn6h4F3SEg:APA91bGkrz6ij8JeUcumThu_DaZrA5coJukx77gT1OUzpFjPmicKqJUC9gxXvJK5tztj68c9r6CBr3oUuhw5Ni0SerhpnMisiPixzwJHG60XTz5rnUklTrCy95VBu0bkzEWNG81w6rJJ"],
+                    "profile" => "development",
+                    "notification" => [
+                        "message" => "Notification envoyée automatiquement"
+                    ]
                 ]
             ]);
-
             Log::info($response->getBody());
         })->everyMinute();
     }
