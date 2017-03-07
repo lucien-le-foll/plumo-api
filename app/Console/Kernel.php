@@ -37,6 +37,9 @@ class Kernel extends ConsoleKernel
 
             try {
                 $client->request('POST', '/push/notifications', [
+                    'headers' => [
+                        'Authorization' => 'Bearer [TOKEN HERE]'
+                    ],
                     'json' => [
                         "tokens" => ["cmn6h4F3SEg:APA91bGkrz6ij8JeUcumThu_DaZrA5coJukx77gT1OUzpFjPmicKqJUC9gxXvJK5tztj68c9r6CBr3oUuhw5Ni0SerhpnMisiPixzwJHG60XTz5rnUklTrCy95VBu0bkzEWNG81w6rJJ"],
                         "profile" => "development",
