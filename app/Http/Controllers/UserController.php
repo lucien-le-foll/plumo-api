@@ -30,6 +30,18 @@ class UserController extends Controller
         return response()->json(compact('token'));
     }
 
+    public function update(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $user->name = $request->get('name');
+        $user->app_id = $request->get('app_id');
+
+        $user->save();
+
+        return response()->json($user->load($this->relations));
+    }
+
     public function login(Request $request)
     {
         $credentials = [
