@@ -31,6 +31,7 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
+        
         $room = Room::find($request->get('room_id'));
         $targetUser = User::find($request->get('user_id'));
 
