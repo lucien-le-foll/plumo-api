@@ -43,7 +43,7 @@ class Kernel extends ConsoleKernel
                 ]
             ]);
             Log::info($response->getBody());
-        })->everyMinute();
+        })->everyMinute()->sendOutputTo('storage/output.log');
     }
 
     /**
