@@ -5,6 +5,7 @@ namespace App\Console;
 use GuzzleHttp\Client;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -30,14 +31,16 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function(){
             $client = new Client();
-            $client->post('https://api.ionic.io/push/notifications', [
+            $response = $client->post('https://api.ionic.io/push/notifications', [
                 "tokens" => ["cmn6h4F3SEg:APA91bGkrz6ij8JeUcumThu_DaZrA5coJukx77gT1OUzpFjPmicKqJUC9gxXvJK5tztj68c9r6CBr3oUuhw5Ni0SerhpnMisiPixzwJHG60XTz5rnUklTrCy95VBu0bkzEWNG81w6rJJ"],
                 "profile" => "development",
                 "notification" => [
                     "message" => "Notification envoyée automatiquement"
                 ]
             ]);
-        })->everyFiveMinutes();
+
+            Log::info($response->getBody());
+        })->everyMinute();
     }
 
     /**
