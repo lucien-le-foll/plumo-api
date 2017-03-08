@@ -10,7 +10,7 @@ use JWTAuth;
 
 class HouseController extends Controller
 {
-    private $relations = ['users', 'rooms', 'rooms.tasks', 'users.tasks'];
+    private $relations = ['users', 'rooms', 'rooms.tasks', 'users.tasks', 'rooms.tasks.user'];
 
     /**
      * @param Request $request
