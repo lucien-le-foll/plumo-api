@@ -34,7 +34,6 @@ class UserController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $user->name = $request->get('name');
         $user->app_id = $request->get('app_id');
 
         $user->save();
